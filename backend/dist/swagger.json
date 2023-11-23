@@ -1,0 +1,1479 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "v1.0.0",
+        "title": "ORION - API DOCUMENTATION",
+        "description": "Draft for API documentation"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000",
+            "description": ""
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "Authorization": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "value": "Bearer <JWT token here>"
+            }
+        }
+    },
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "Register for master",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "string",
+                                "email": "string",
+                                "password": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": {
+                                        "id": "string",
+                                        "name": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "Login and get an authentication token",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "email": "string",
+                                "password": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "token": "eyJhbGciOiJIUzI1231fR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlNjZhNzE2OS1kMTcwLTQ4MmMtYWM2MC0xMjU1ZDhjYjg3ZDQiLCJpYXQiOjE3MDAxMjg2ODcsImV4cCI6MTcwMDEzMjI4N30.TDFRm2B05-9wSZlEz5aUKyd_s-gDa8-fGr0hScheai0",
+                                    "user": {
+                                        "id": "e66a7169-d170-482c-ac60-1255d8cb87d4",
+                                        "imgUrl": null,
+                                        "name": "john doe",
+                                        "email": "johndoe@mail.com",
+                                        "createdAt": "2023-11-16T09:45:21.386Z",
+                                        "updatedAt": "2023-11-16T09:45:21.386Z",
+                                        "roleId": "419a9c98-6dda-484f-ab7b-333476ded593",
+                                        "role": {
+                                            "id": "419a9c98-6dda-484f-ab7b-333476ded593",
+                                            "imgUrl": null,
+                                            "name": "Admin"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "msg": "Incorrect password"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "msg": "User not found"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product": {
+            "get": {
+                "tags": ["Product"],
+                "summary": "Get a list of products",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "imgUrl": "string",
+                                        "sku": "string",
+                                        "name": "string",
+                                        "description": "string",
+                                        "cost": 0,
+                                        "quantity": 0,
+                                        "unitId": "string",
+                                        "categoryId": "string",
+                                        "materials": [
+                                            {
+                                                "materialId": "string",
+                                                "quantityUse": 0
+                                            }
+                                        ],
+                                        "variants": [
+                                            {
+                                                "id": "string",
+                                                "name": "string",
+                                                "price": 0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Product"],
+                "summary": "Create a new product",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "sku": "string",
+                                "name": "string",
+                                "description": "string",
+                                "cost": 0,
+                                "quantity": 0,
+                                "unitId": "string",
+                                "categoryId": "string",
+                                "materials": [
+                                    {
+                                        "materialId": "string",
+                                        "quantityUse": 0
+                                    }
+                                ],
+                                "variants": [
+                                    {
+                                        "name": "string",
+                                        "price": 0
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "sku": "string",
+                                    "name": "string",
+                                    "description": "string",
+                                    "cost": 0,
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "categoryId": "string",
+                                    "materials": [
+                                        {
+                                            "materialId": "string",
+                                            "quantityUse": 0
+                                        }
+                                    ],
+                                    "variants": [
+                                        {
+                                            "id": "string",
+                                            "name": "string",
+                                            "price": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/{productId}": {
+            "get": {
+                "tags": ["Product"],
+                "summary": "Get a product by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "productId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "sku": "string",
+                                    "name": "string",
+                                    "description": "string",
+                                    "cost": 0,
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "categoryId": "string",
+                                    "materials": [
+                                        {
+                                            "materialId": "string",
+                                            "quantityUse": 0
+                                        }
+                                    ],
+                                    "variants": [
+                                        {
+                                            "id": "string",
+                                            "name": "string",
+                                            "price": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Product"],
+                "summary": "Update an existing product",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "productId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string",
+                                "description": "string",
+                                "unitId": "string",
+                                "categoryId": "string",
+                                "materials": [
+                                    {
+                                        "materialId": "string",
+                                        "quantityUse": 0
+                                    }
+                                ],
+                                "variants": [
+                                    {
+                                        "id": "string",
+                                        "name": "string",
+                                        "price": 0
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "description": "string",
+                                    "cost": 0,
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "categoryId": "string",
+                                    "materials": [
+                                        {
+                                            "materialId": "string",
+                                            "quantityUse": 0
+                                        }
+                                    ],
+                                    "variants": [
+                                        {
+                                            "id": "string",
+                                            "name": "string",
+                                            "price": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Product"],
+                "summary": "Delete an existing product",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "productId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The product was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/material": {
+            "get": {
+                "tags": ["Material"],
+                "summary": "Get a list of materials",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "imgUrl": "string",
+                                        "name": "string",
+                                        "quantity": 0,
+                                        "unitId": "string",
+                                        "products": [
+                                            {
+                                                "id": "string",
+                                                "imgUrl": "string",
+                                                "sku": "string",
+                                                "name": "string",
+                                                "description": "string",
+                                                "cost": 0,
+                                                "quantity": 0,
+                                                "unitId": "string",
+                                                "categoryId": "string"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Material"],
+                "summary": "Create a new material",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string",
+                                "quantity": 0,
+                                "unitId": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "products": []
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/material/{materialId}": {
+            "get": {
+                "tags": ["Material"],
+                "summary": "Get a material by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "materialId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "products": [
+                                        {
+                                            "id": "string",
+                                            "imgUrl": "string",
+                                            "sku": "string",
+                                            "name": "string",
+                                            "description": "string",
+                                            "cost": 0,
+                                            "quantity": 0,
+                                            "unitId": "string",
+                                            "categoryId": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Material"],
+                "summary": "Update an existing material",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "materialId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string",
+                                "quantity": 0,
+                                "unitId": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "quantity": 0,
+                                    "unitId": "string",
+                                    "products": []
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Material"],
+                "summary": "Delete an existing material",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "materialId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The material was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/category": {
+            "get": {
+                "tags": ["Category"],
+                "summary": "Get a list of categories",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "imgUrl": "string",
+                                        "name": "string",
+                                        "products": [
+                                            {
+                                                "id": "string",
+                                                "imgUrl": "string",
+                                                "sku": "string",
+                                                "name": "string",
+                                                "description": "string",
+                                                "cost": 0,
+                                                "quantity": 0,
+                                                "unitId": "string",
+                                                "categoryId": "string"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Category"],
+                "summary": "Create a new category",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "products": []
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/category/{categoryId}": {
+            "get": {
+                "tags": ["Category"],
+                "summary": "Get a category by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "categoryId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "products": [
+                                        {
+                                            "id": "string",
+                                            "imgUrl": "string",
+                                            "sku": "string",
+                                            "name": "string",
+                                            "description": "string",
+                                            "cost": 0,
+                                            "quantity": 0,
+                                            "unitId": "string",
+                                            "categoryId": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Category"],
+                "summary": "Update an existing category",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "categoryId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string",
+                                    "products": []
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Category"],
+                "summary": "Delete an existing category",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "categoryId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The category was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role": {
+            "get": {
+                "tags": ["Role"],
+                "summary": "Get a list of roles",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "imgUrl": "string",
+                                        "name": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Role"],
+                "summary": "Create a new role",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role/{roleId}": {
+            "get": {
+                "tags": ["Role"],
+                "summary": "Get a role by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roleId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Role"],
+                "summary": "Update an existing role",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roleId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "imgUrl": "string",
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "imgUrl": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Role"],
+                "summary": "Delete an existing role",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roleId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The role was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/unit": {
+            "get": {
+                "tags": ["Unit"],
+                "summary": "Get a list of units",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "name": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Unit"],
+                "summary": "Create a new unit",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/unit/{unitId}": {
+            "get": {
+                "tags": ["Unit"],
+                "summary": "Get a unit by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "unitId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Unit"],
+                "summary": "Update an existing unit",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "unitId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Unit"],
+                "summary": "Delete an existing unit",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "unitId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The unit was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": ["User"],
+                "summary": "Get a list of users",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": "string",
+                                        "name": "string",
+                                        "email": "string",
+                                        "role": {
+                                            "id": "string",
+                                            "name": "string"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["User"],
+                "summary": "Create a new user",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "string",
+                                "email": "string",
+                                "password": "string",
+                                "roleId": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": {
+                                        "id": "string",
+                                        "name": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/{userId}": {
+            "get": {
+                "tags": ["User"],
+                "summary": "Get a user by ID",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": {
+                                        "id": "string",
+                                        "name": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["User"],
+                "summary": "Update an existing user",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "string",
+                                "email": "string",
+                                "roleId": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": {
+                                        "id": "string",
+                                        "name": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["User"],
+                "summary": "Delete an existing user",
+                "security": [
+                    {
+                        "Authorization": {
+                            "type": "http",
+                            "scheme": "bearer",
+                            "bearerFormat": "JWT",
+                            "value": "Bearer <JWT token here>"
+                        }
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": "The user was successfully deleted"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

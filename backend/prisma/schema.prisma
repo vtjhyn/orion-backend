@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @db.Uuid
+  imgUrl         String?
+  name           String
+  email          String   @unique
+  hashedPassword String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  roleId         String   @db.Uuid
+  role           Role     @relation(fields: [roleId], references: [id])
+  order          Order[]
+}
+
+model Role {
+  id      String       @id @db.Uuid
+  imgUrl  String?
+  name    String       @unique
+  users   User[]
+  modules ModuleList[]
+}
+
+model ModuleList {
+  roleId   String     @db.Uuid
+  moduleId String     @db.Uuid
+  role     Role       @relation(fields: [roleId], references: [id])
+  modules  ModuleItem @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+   @@id([moduleId, roleId])
+}
+
+model ModuleItem {
+  id     String       @id @db.Uuid
+  imgUrl String?
+  name   String
+  roles  ModuleList[]
+}
+
+model Product {
+  id          String            @id @db.Uuid
+  imgUrl      String?
+  sku         String?
+  name        String
+  description String?
+  cost        Int?
+  quantity    Int?
+  unitId      String            @db.Uuid
+  unit        Unit              @relation(fields: [unitId], references: [id])
+  categoryId  String            @db.Uuid
+  category    Category          @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  materials   ProductMaterial[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  variants    Variant[]
+}
+
+model Variant {
+  id        String  @id @db.Uuid
+  name      String
+  price     Int
+  productId String  @db.Uuid
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Category {
+  id       String    @id @db.Uuid
+  imgUrl   String?
+  name     String
+  products Product[]
+}
+
+model Unit {
+  id        String     @id @db.Uuid
+  imgUrl    String?
+  name      String
+  products  Product[]
+  materials Material[]
+}
+
+model Material {
+  id       String            @id @db.Uuid
+  imgUrl   String?
+  name     String
+  quantity Int
+  unitId   String            @db.Uuid
+  unit     Unit              @relation(fields: [unitId], references: [id])
+  products ProductMaterial[]
+}
+
+model ProductMaterial {
+  productId  String   @db.Uuid
+  materialId String   @db.Uuid
+  quantityUse Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  material    Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  @@id([productId, materialId])
+}
+
+model Order {
+  id        String      @id @db.Uuid
+  total     Int
+  orderDate DateTime
+  status    String
+  items     OrderItem[]
+  paymentId String      @db.Uuid
+  payment   Payment     @relation(fields: [paymentId], references: [id])
+  userId    String      @db.Uuid
+  user      User        @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id        String  @id @db.Uuid
+  productId String  @db.Uuid
+  quantity  Int
+  price     Int
+  product   Product @relation(fields: [productId], references: [id])
+  orderId   String  @db.Uuid
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Payment {
+  id              String        @id @db.Uuid
+  paymentDate     DateTime
+  amount          Int
+  order           Order[]
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId String        @db.Uuid
+}
+
+model PaymentMethod {
+  id          String    @id @db.Uuid
+  imgUrl      String?
+  name        String
+  description String?
+  payments    Payment[]
+}
