@@ -11,7 +11,7 @@ const saltRounds = 10; // Jumlah putaran untuk pembuatan salt
 export async function Register(req: Request, res: Response) {
   try {
     const data = req.body;
-    const { name, email, password } = data;
+    const { name, email, password, roleId } = data;
 
     const existEmail = await prisma.user.findUnique({
       where: {
@@ -33,7 +33,7 @@ export async function Register(req: Request, res: Response) {
         hashedPassword,
         role: {
           connect: {
-            id: "419a9c98-6dda-484f-ab7b-333476ded593", //roleId for master
+            id: roleId
           },
         },
       },

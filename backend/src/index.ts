@@ -28,13 +28,13 @@ app.use(cors());
 app.use(express.json());
 
 app.use(AuthRoute);
+app.use(RoleRoute);
 
 app.use(verifyToken)
 
 app.use(CategoryRoute);
 app.use(MaterialRoute);
 app.use(ProductRoute);
-app.use(RoleRoute);
 app.use(UnitRoute);
 app.use(UserRoute);
 
