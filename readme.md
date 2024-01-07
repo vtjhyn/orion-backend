@@ -1,3 +1,6 @@
+Requirements:
+- Install Docker: https://docs.docker.com/desktop/
+
 Using Docker :
 - run : docker compose build
 - start : docker compose up -d
