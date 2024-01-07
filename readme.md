@@ -8,3 +8,5 @@ Documentation API:
 Need to fix:
 - Table relation
 - Setting for master user
+- Database backup
+- API Security
