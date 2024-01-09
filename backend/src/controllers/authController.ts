@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
-import exclude from "../utils/exclude";
 
 const prisma = new PrismaClient();
 const saltRounds = 10; // Jumlah putaran untuk pembuatan salt
@@ -31,9 +30,10 @@ export async function Register(req: Request, res: Response) {
         name,
         email,
         hashedPassword,
+        salt,
         role: {
           connect: {
-            id: roleId
+            id: roleId,
           },
         },
       },
@@ -42,9 +42,7 @@ export async function Register(req: Request, res: Response) {
       },
     });
 
-    const cleanData = exclude(user, ["hashedPassword"]);
-
-    res.status(201).json(cleanData);
+    res.status(201).json(user);
   } catch (error) {
     res.status(500).json(`Internal Server Error: ${error}`);
   } finally {
@@ -57,7 +55,7 @@ export const Login = async (req: Request, res: Response) => {
   const { email, password } = data;
 
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
         email,
       },
@@ -84,13 +82,15 @@ export const Login = async (req: Request, res: Response) => {
         .json("Internal Server Error: Secret key not defined");
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, userEmail: user.email, userRole: user.role.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
-    const cleanData = exclude(user, ['hashedPassword']);
-
-    res.status(200).json({ token, cleanData });
+    res.status(200).json({ token, user });
   } catch (error) {
     res.status(500).json("Internal Server Error");
   }

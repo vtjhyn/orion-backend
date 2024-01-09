@@ -49,10 +49,9 @@ export async function getUserById(req: Request, res: Response) {
 }
 
 export async function createUser(req: Request, res: Response) {
+  const data = req.body;
+  const { name, email, password, roleId } = data;
   try {
-    const data = req.body;
-    const { name, email, password, roleId } = data;
-
     const existEmail = await prisma.user.findUnique({
       where: {
         email,
@@ -71,6 +70,7 @@ export async function createUser(req: Request, res: Response) {
         name,
         email,
         hashedPassword,
+        salt,
         role: {
           connect: {
             id: roleId,
@@ -93,11 +93,10 @@ export async function createUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
+  const { userId } = req.params;
+  const data = req.body;
+  const { name, email, roleId } = data;
   try {
-    const { userId } = req.params;
-    const data = req.body;
-    const { name, email, roleId } = data;
-
     const user = await prisma.user.update({
       where: {
         id: userId,
