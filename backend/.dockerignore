@@ -1,6 +1,0 @@
-node_modules
-*.log
-readme.md
-.git
-.gitignore
-.env

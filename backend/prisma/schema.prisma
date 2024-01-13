@@ -3,143 +3,136 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model User {
-  id             String   @id @db.Uuid
-  imgUrl         String?
-  name           String
-  email          String   @unique
-  hashedPassword String
-  salt           String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  roleId         String   @db.Uuid
-  role           Role     @relation(fields: [roleId], references: [id])
-  order          Order[]
+model Item {
+  id           String    @id @default(uuid())
+  name         String
+  stock        Float     @default(0)
+  available    Boolean   @default(false)
+  price        Float
+  stock_alert  Boolean   @default(false)
+  expired_date DateTime?
+
+  default_uom_id String?
+  default_uom    Uom?    @relation(fields: [default_uom_id], references: [id])
+
+  supplier_id String?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
+
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id])
+
+  list_uom     ItemUom[]
+  stock_opname StockOpname[]
+  item_logs    ItemLog[]
+  transactions InventoryTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Role {
-  id      String       @id @db.Uuid
-  imgUrl  String?
-  name    String       @unique
-  users   User[]
-  modules ModuleList[]
-}
-
-model ModuleList {
-  roleId   String     @db.Uuid
-  moduleId String     @db.Uuid
-  role     Role       @relation(fields: [roleId], references: [id])
-  modules  ModuleItem @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-   @@id([moduleId, roleId])
-}
-
-model ModuleItem {
-  id     String       @id @db.Uuid
-  imgUrl String?
+model Uom {
+  id     String @id @default(uuid())
   name   String
-  roles  ModuleList[]
+
+  item_uom ItemUom[]
+  item      Item[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Product {
-  id          String            @id @db.Uuid
-  imgUrl      String?
-  sku         String?
-  name        String
-  description String?
-  cost        Int?
-  quantity    Int?
-  unitId      String            @db.Uuid
-  unit        Unit              @relation(fields: [unitId], references: [id])
-  categoryId  String            @db.Uuid
-  category    Category          @relation(fields: [categoryId], references: [id])
-  orderItems  OrderItem[]
-  materials   ProductMaterial[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  variants    Variant[]
-}
+model ItemUom {
+  item_id String
+  uom_id  String
+  item    Item   @relation(fields: [item_id], references: [id])
+  uom     Uom    @relation(fields: [uom_id], references: [id])
 
-model Variant {
-  id        String  @id @db.Uuid
-  name      String
-  price     Int
-  productId String  @db.Uuid
-  product   Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([item_id, uom_id]) // Menetapkan item_id dan uom_id sebagai kunci gabungan
 }
 
 model Category {
-  id       String    @id @db.Uuid
-  imgUrl   String?
-  name     String
-  products Product[]
+  id   String @id @default(uuid())
+  name String
+
+  item Item[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Unit {
-  id        String     @id @db.Uuid
-  imgUrl    String?
-  name      String
-  products  Product[]
-  materials Material[]
+model Supplier {
+  id             String @id @default(uuid())
+  name           String
+  address        String
+  phone          String
+  email          String
+  contact_person String
+  items          Item[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Material {
-  id       String            @id @db.Uuid
-  imgUrl   String?
-  name     String
-  quantity Int
-  unitId   String            @db.Uuid
-  unit     Unit              @relation(fields: [unitId], references: [id])
-  products ProductMaterial[]
-}
-
-model ProductMaterial {
-  productId  String   @db.Uuid
-  materialId String   @db.Uuid
-  quantityUse Int
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  material    Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  @@id([productId, materialId])
-}
-
-model Order {
-  id        String      @id @db.Uuid
-  total     Int
-  orderDate DateTime
-  status    String
-  items     OrderItem[]
-  paymentId String      @db.Uuid
-  payment   Payment     @relation(fields: [paymentId], references: [id])
-  userId    String      @db.Uuid
-  user      User        @relation(fields: [userId], references: [id])
-}
-
-model OrderItem {
-  id        String  @id @db.Uuid
-  productId String  @db.Uuid
-  quantity  Int
-  price     Int
-  product   Product @relation(fields: [productId], references: [id])
-  orderId   String  @db.Uuid
-  order     Order   @relation(fields: [orderId], references: [id])
-}
-
-model Payment {
-  id              String        @id @db.Uuid
-  paymentDate     DateTime
-  amount          Int
-  order           Order[]
-  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  paymentMethodId String        @db.Uuid
-}
-
-model PaymentMethod {
-  id          String    @id @db.Uuid
-  imgUrl      String?
+model Asset {
+  id          String @id @default(uuid())
   name        String
-  description String?
-  payments    Payment[]
+  description String
+  price       Float
+  uom         String
+  stock       Float
+  type        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItemLog {
+  id            String @id @default(uuid())
+  name          String
+  initial_stock Float
+  final_stock   Float
+  uom           String
+  item_id       String
+  item          Item   @relation(fields: [item_id], references: [id])
+  type          String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InventoryTransaction {
+  id          String  @id @default(uuid())
+  item_id     String
+  item        Item    @relation(fields: [item_id], references: [id])
+  type        String
+  category    String
+  stock       Float
+  uom         String
+  price       Float
+  total       Float
+  paid_status Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StockOpname {
+  id           String @id @default(uuid())
+  name         String
+  stock_listed Float
+  stock_actual Float
+  uom          String
+  item_id      String
+  item         Item   @relation(fields: [item_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

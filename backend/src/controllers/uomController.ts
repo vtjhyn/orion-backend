@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function getUnits(req: Request, res: Response) {
   try {
-    const units = await prisma.unit.findMany();
+    const units = await prisma.uom.findMany();
     res.status(200).json(units);
   } catch (error) {
     res.status(500).json("Internal Server Error");
@@ -19,7 +19,7 @@ export async function getUnitById(req: Request, res: Response) {
   try {
     const { unitId } = req.params;
 
-    const unit = await prisma.unit.findUnique({
+    const unit = await prisma.uom.findUnique({
       where: {
         id: unitId,
       },
@@ -41,7 +41,7 @@ export async function createUnit(req: Request, res: Response) {
     const data = req.body;
     const { name } = data;
 
-    const unit = await prisma.unit.create({
+    const unit = await prisma.uom.create({
       data: {
         id: uuid(),
         name,
@@ -61,7 +61,7 @@ export async function updateUnit(req: Request, res: Response) {
     const data = req.body;
     const { name } = data;
 
-    const unit = await prisma.unit.update({
+    const unit = await prisma.uom.update({
       where: {
         id: unitId,
       },
@@ -85,7 +85,7 @@ export async function deleteUnit(req: Request, res: Response) {
   try {
     const { unitId } = req.params;
 
-    const unit = await prisma.unit.delete({
+    const unit = await prisma.uom.delete({
       where: {
         id: unitId,
       },
