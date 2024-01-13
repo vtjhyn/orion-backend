@@ -7,4 +7,4 @@ router.post("/connect-uom", addItemUom);
 router.get("/connect-uom", getItemUomsByItemId);
 router.delete("/connect-uom", deleteItemUom);
 
-export { router as UomRoute };
+export { router as ItemUomRoute };

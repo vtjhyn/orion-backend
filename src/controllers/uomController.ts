@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuid } from "uuid";
 
 const prisma = new PrismaClient();
 
 export async function getUnits(req: Request, res: Response) {
   try {
-    const units = await prisma.uom.findMany();
+    const units = await prisma.uom.findMany({
+      select:{
+        id:true,
+        name:true
+      }
+    });
     res.status(200).json(units);
   } catch (error) {
     res.status(500).json("Internal Server Error");
@@ -23,6 +27,10 @@ export async function getUnitById(req: Request, res: Response) {
       where: {
         id: unitId,
       },
+      select:{
+        id:true,
+        name:true
+      }
     });
     if (unit) {
       res.status(200).json(unit);
@@ -43,7 +51,6 @@ export async function createUnit(req: Request, res: Response) {
 
     const unit = await prisma.uom.create({
       data: {
-        id: uuid(),
         name,
       },
     });
