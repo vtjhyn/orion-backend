@@ -5,87 +5,29 @@ const prisma = new PrismaClient();
 
 export const getItems = async (req: Request, res: Response) => {
   try {
-    const { limit = 10, page = 1, categoryId, fields } = req.query;
-
-    let selectFields: Record<string, boolean> | undefined;
-
-    if (fields) {
-      const fieldList = fields.toString().split(",");
-      selectFields = {};
-      fieldList.forEach((field) => {
-        const cleanField = field.replace(/[\[\]"]+/g, '');
-        selectFields![cleanField] = true;
-      });
-    }
-
     const items = await prisma.item.findMany({
-      skip: (Number(page) - 1) * Number(limit),
-      take: Number(limit),
-      where: {
-        category_id: categoryId as string | undefined,
-      },
-      select: {
-        ...selectFields,
-        id: true,
-        name: true,
-        stock: true,
-        price: true,
-        stock_alert: true,
-        available: true,
-        category: { select: { name: true } },
-        default_uom: { select: { name: true } },
-        supplier: { select: { name: true } },
-        list_uom: { select: { uom_id: true, uom: { select: { id: true, name: true } }, createdAt: true, updatedAt: true } },
-      } || {
-        id: true,
-        name: true,
-        stock: true,
-        price: true,
-        stock_alert: true,
-        available: true,
-        category: { select: { name: true } },
-        default_uom: { select: { name: true } },
-        supplier: { select: { name: true } },
-        list_uom: { select: { uom_id: true, uom: { select: { id: true, name: true } }, createdAt: true, updatedAt: true } },
+      include: {
+        category: true,
+        default_uom: true,
+        supplier: true,
+        stock_opname: true,
+        list_uom: true,
+        item_logs: true,
+        transactions: true,
       },
     });
 
-    // Transform the data before sending the response
-    const transformedItems = items.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-        stock: item.stock,
-        price: item.price,
-        stock_alert: item.stock_alert,
-        available: item.available,
-        supplier: item.supplier?.name || null,
-        category: item.category?.name || null,
-        default_uom: item.default_uom?.name || null,
-        list_uom: item.list_uom?.map((itemUom) => ({
-          id: itemUom.uom?.id,
-          name: itemUom.uom?.name,
-        })) || [],
-      };
-    });
-
-    return res.json(transformedItems);
+    return res.status(200).json(items);
   } catch (error: any) {
     return res.status(500).json({ msg: error.message });
   }
 };
-
 
 export const getItemById = async (req: Request, res: Response) => {
   try {
     const itemId = req.query.itemId as string;
     const item = await prisma.item.findUnique({
       where: { id: itemId },
-      include: {
-        category: true,
-        default_uom: true,
-        supplier: true,
-      },
     });
     if (!item) return res.status(404).json({ msg: "Item not found" });
     return res.status(200).json(item);
@@ -109,15 +51,6 @@ export const createItem = async (req: Request, res: Response) => {
         price,
         stock_alert,
         available,
-      },
-      include: {
-        category: {
-          select: {
-            name: true,
-          },
-        },
-        default_uom: true,
-        supplier: true,
       },
     });
     return res.status(201).json(item);
@@ -145,26 +78,21 @@ export const updateItem = async (req: Request, res: Response) => {
     const item = await prisma.item.update({
       where: { id: itemId },
       data: {
-        name,
+        name: name || existingItem.name,
         category: {
           connect: {
-            id: categoryId,
+            id: categoryId || existingItem.category_id,
           },
         },
-        stock,
-        price,
-        stock_alert,
-        available,
+        stock: stock || existingItem.stock,
+        price: price || existingItem.price,
+        stock_alert: stock_alert || existingItem.stock_alert,
+        available: available || existingItem.available,
         default_uom: {
           connect: {
-            id: default_uom_id,
+            id: default_uom_id || existingItem.default_uom_id,
           },
         },
-      },
-      include: {
-        category: true,
-        default_uom: true,
-        supplier: true,
       },
     });
     if (!item) return res.status(404).json({ msg: "Item not found" });

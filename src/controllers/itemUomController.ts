@@ -32,6 +32,7 @@ export const getItemUomsByItemId = async (
     const itemId = req.query.itemId as string;
     const itemUoms = await prisma.itemUom.findMany({
       where: { item_id: itemId },
+      include: { uom: true },
     });
 
     res.status(200).json(itemUoms);

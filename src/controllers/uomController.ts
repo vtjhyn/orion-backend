@@ -6,10 +6,6 @@ const prisma = new PrismaClient();
 export async function getUnits(req: Request, res: Response) {
   try {
     const units = await prisma.uom.findMany({
-      select:{
-        id:true,
-        name:true
-      }
     });
     res.status(200).json(units);
   } catch (error) {
@@ -27,10 +23,6 @@ export async function getUnitById(req: Request, res: Response) {
       where: {
         id: unitId,
       },
-      select:{
-        id:true,
-        name:true
-      }
     });
     if (unit) {
       res.status(200).json(unit);
