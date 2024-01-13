@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/connect-uom", addItemUom);
 router.get("/connect-uom", getItemUomsByItemId);
-router.put("/connect-uom", deleteItemUom);
+router.delete("/connect-uom", deleteItemUom);
 
 export { router as UomRoute };
