@@ -10,9 +10,9 @@ import {
 const router = express.Router();
 
 router.get("/uom", getUnits);
-router.get("/uom/:id", getUnitById);
+router.get("/uom", getUnitById);
 router.post("/uom", createUnit);
-router.patch("/uom/:id", updateUnit);
-router.delete("/uom/:id", deleteUnit);
+router.put("/uom", updateUnit);
+router.delete("/uom", deleteUnit);
 
 export { router as UomRoute };

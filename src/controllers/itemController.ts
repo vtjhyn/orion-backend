@@ -21,7 +21,6 @@ export const getItems = async (req: Request, res: Response) => {
         category_id: categoryId as string | undefined,
       },
       select: selectFields,
-      
     });
 
     return res.json(items);
@@ -39,11 +38,11 @@ export const getItemById = async (req: Request, res: Response) => {
   } catch (error: any) {
     return res.status(500).json({ msg: error.message });
   }
-}
+};
 
 export const createItem = async (req: Request, res: Response) => {
   try {
-    const { name, categoryId, stock, price, stock_alert, default_uom, available } = req.body;
+    const { name, categoryId, stock, price, stock_alert, available } = req.body;
     const item = await prisma.item.create({
       data: {
         name,
@@ -55,7 +54,6 @@ export const createItem = async (req: Request, res: Response) => {
         stock,
         price,
         stock_alert,
-        default_uom,
         available,
       },
       include: {
@@ -73,7 +71,15 @@ export const createItem = async (req: Request, res: Response) => {
 export const updateItem = async (req: Request, res: Response) => {
   try {
     const id = req.query.id as string;
-    const { name, categoryId,  stock, price, stock_alert,  default_uomId, available } = req.body;
+    const {
+      name,
+      categoryId,
+      stock,
+      price,
+      stock_alert,
+      available,
+      default_uom_id,
+    } = req.body;
     const existingItem = await prisma.item.findUnique({ where: { id: id } });
     if (!existingItem) return res.status(404).json({ msg: "Item not found" });
     const item = await prisma.item.update({
@@ -88,19 +94,18 @@ export const updateItem = async (req: Request, res: Response) => {
         stock,
         price,
         stock_alert,
+        available,
         default_uom: {
           connect: {
-            id: default_uomId,
+            id: default_uom_id,
           },
         },
-        available,
       },
       include: {
         category: true,
         default_uom: true,
         supplier: true,
       },
-
     });
     if (!item) return res.status(404).json({ msg: "Item not found" });
     return res.status(200).json(item);

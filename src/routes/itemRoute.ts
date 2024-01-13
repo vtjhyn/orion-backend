@@ -10,9 +10,9 @@ import {
 const router = express.Router();
 
 router.get("/item", getItems);
-router.get("/item/:id", getItemById);
+router.get("/item", getItemById);
 router.post("/item", createItem);
-router.patch("/item/:id", updateItem);
-router.delete("/item/:id", deleteItem);
+router.put("/item", updateItem);
+router.delete("/item", deleteItem);
 
 export { router as ItemRoute };

@@ -17,7 +17,7 @@ export async function getUnits(req: Request, res: Response) {
 
 export async function getUnitById(req: Request, res: Response) {
   try {
-    const { unitId } = req.params;
+    const unitId = req.query.unitId as string;
 
     const unit = await prisma.uom.findUnique({
       where: {
@@ -57,7 +57,7 @@ export async function createUnit(req: Request, res: Response) {
 
 export async function updateUnit(req: Request, res: Response) {
   try {
-    const { unitId } = req.params;
+    const unitId = req.query.unitId as string;
     const data = req.body;
     const { name } = data;
 
@@ -83,7 +83,7 @@ export async function updateUnit(req: Request, res: Response) {
 
 export async function deleteUnit(req: Request, res: Response) {
   try {
-    const { unitId } = req.params;
+    const unitId = req.query.unitId as string;
 
     const unit = await prisma.uom.delete({
       where: {
