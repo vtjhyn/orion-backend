@@ -29,7 +29,7 @@ model Item {
   list_uom     ItemUom[]
   stock_opname StockOpname[]
   item_logs    ItemLog[]
-  transactions InventoryTransaction[]
+  transactions ItemTransaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -76,6 +76,8 @@ model Supplier {
   email          String
   contact_person String
   items          Item[]
+  item_transaction   ItemTransaction[]
+  service_transaction ServieTransaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,7 +110,7 @@ model ItemLog {
   updatedAt DateTime @updatedAt
 }
 
-model InventoryTransaction {
+model ItemTransaction {
   id          String  @id @default(uuid())
   item_id     String
   item        Item    @relation(fields: [item_id], references: [id])
@@ -119,6 +121,26 @@ model InventoryTransaction {
   price       Float
   total       Float
   paid_status Boolean @default(false)
+
+  supplier_id String?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServieTransaction {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  type        String
+  category    String
+  total       Float
+  paid_status Boolean @default(false)
+
+  supplier_id String?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
