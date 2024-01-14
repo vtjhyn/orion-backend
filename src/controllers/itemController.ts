@@ -9,7 +9,6 @@ export const getItems = async (req: Request, res: Response) => {
       include: {
         category: true,
         default_uom: true,
-        supplier: true,
         stock_opname: true,
         list_uom: true,
         item_logs: true,
