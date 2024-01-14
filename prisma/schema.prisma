@@ -20,9 +20,6 @@ model Item {
   default_uom_id String?
   default_uom    Uom?    @relation(fields: [default_uom_id], references: [id])
 
-  supplier_id String?
-  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
-
   category_id String
   category    Category @relation(fields: [category_id], references: [id])
 
@@ -76,7 +73,6 @@ model Supplier {
   phone               String
   email               String
   contact_person      String
-  items               Item[]
   item_transaction    ItemTransaction[]
   service_transaction ServieTransaction[]
 
