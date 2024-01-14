@@ -26,9 +26,10 @@ model Item {
   category_id String
   category    Category @relation(fields: [category_id], references: [id])
 
+  adjustment   UsedStcok[]
   list_uom     ItemUom[]
   stock_opname StockOpname[]
-  item_logs    ItemLog[]
+  item_logs    Adjustment[]
   transactions ItemTransaction[]
 
   createdAt DateTime @default(now())
@@ -36,11 +37,11 @@ model Item {
 }
 
 model Uom {
-  id     String @id @default(uuid())
-  name   String
+  id   String @id @default(uuid())
+  name String
 
   item_uom ItemUom[]
-  item      Item[]
+  item     Item[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -69,14 +70,14 @@ model Category {
 }
 
 model Supplier {
-  id             String @id @default(uuid())
-  name           String
-  address        String
-  phone          String
-  email          String
-  contact_person String
-  items          Item[]
-  item_transaction   ItemTransaction[]
+  id                  String              @id @default(uuid())
+  name                String
+  address             String
+  phone               String
+  email               String
+  contact_person      String
+  items               Item[]
+  item_transaction    ItemTransaction[]
   service_transaction ServieTransaction[]
 
   createdAt DateTime @default(now())
@@ -96,15 +97,14 @@ model Asset {
   updatedAt DateTime @updatedAt
 }
 
-model ItemLog {
-  id            String @id @default(uuid())
-  name          String
-  initial_stock Float
-  final_stock   Float
-  uom           String
-  item_id       String
-  item          Item   @relation(fields: [item_id], references: [id])
-  type          String
+model Adjustment {
+  id           String @id @default(uuid())
+  item_id      String
+  item         Item   @relation(fields: [item_id], references: [id])
+  in_stock     Float
+  actual_stcok Float
+  uom          String
+  type         String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -148,12 +148,24 @@ model ServieTransaction {
 
 model StockOpname {
   id           String @id @default(uuid())
-  name         String
-  stock_listed Float
-  stock_actual Float
-  uom          String
   item_id      String
   item         Item   @relation(fields: [item_id], references: [id])
+  in_stock     Float
+  actual_stock Float
+  uom          String
+  notes        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UsedStcok {
+  id      String @id @default(uuid())
+  item_id String
+  item    Item   @relation(fields: [item_id], references: [id])
+  amount  Float
+  uom     String
+  status  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
