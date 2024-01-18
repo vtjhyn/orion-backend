@@ -8,6 +8,16 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+model ItemCategory {
+  id   String @id @default(uuid())
+  name String
+
+  item Item[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Item {
   id           String    @id @default(uuid())
   name         String
@@ -18,13 +28,13 @@ model Item {
   expired_date DateTime?
 
   default_uom_id String?
-  default_uom    Uom?    @relation(fields: [default_uom_id], references: [id])
+  default_uom    UoMCategory?    @relation(fields: [default_uom_id], references: [id])
 
   category_id String
-  category    Category @relation(fields: [category_id], references: [id])
+  category    ItemCategory @relation(fields: [category_id], references: [id])
 
   adjustment   UsedStcok[]
-  list_uom     ItemUom[]
+  list_uom     UoM[]
   stock_opname StockOpname[]
   item_logs    Adjustment[]
   transactions ItemTransaction[]
@@ -33,37 +43,27 @@ model Item {
   updatedAt DateTime @updatedAt
 }
 
-model Uom {
+model UoMCategory {
   id   String @id @default(uuid())
   name String
 
-  item_uom ItemUom[]
-  item     Item[]
+  unit_list UoM[]
+  item_list     Item[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model ItemUom {
+model UoM {
   item_id String
   uom_id  String
   item    Item   @relation(fields: [item_id], references: [id])
-  uom     Uom    @relation(fields: [uom_id], references: [id])
+  uom     UoMCategory    @relation(fields: [uom_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@id([item_id, uom_id]) // Menetapkan item_id dan uom_id sebagai kunci gabungan
-}
-
-model Category {
-  id   String @id @default(uuid())
-  name String
-
-  item Item[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Supplier {

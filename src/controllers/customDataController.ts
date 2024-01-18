@@ -24,11 +24,6 @@ export const getItemCustom = async (req: Request, res: Response) => {
             name: true,
           },
         },
-        supplier: {
-          select: {
-            name: true,
-          },
-        },
         list_uom: {
           select: {
             uom: {

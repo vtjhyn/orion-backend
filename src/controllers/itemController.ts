@@ -17,8 +17,8 @@ export const getItems = async (req: Request, res: Response) => {
     });
 
     return res.status(200).json(items);
-  } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
   }
 };
 
@@ -28,10 +28,10 @@ export const getItemById = async (req: Request, res: Response) => {
     const item = await prisma.item.findUnique({
       where: { id: itemId },
     });
-    if (!item) return res.status(404).json({ msg: "Item not found" });
+    if (!item) return res.status(404).json("Item not found");
     return res.status(200).json(item);
-  } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
   }
 };
 
@@ -53,8 +53,8 @@ export const createItem = async (req: Request, res: Response) => {
       },
     });
     return res.status(201).json(item);
-  } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
   }
 };
 
@@ -73,7 +73,7 @@ export const updateItem = async (req: Request, res: Response) => {
     const existingItem = await prisma.item.findUnique({
       where: { id: itemId },
     });
-    if (!existingItem) return res.status(404).json({ msg: "Item not found" });
+    if (!existingItem) return res.status(404).json("Item not found");
     const item = await prisma.item.update({
       where: { id: itemId },
       data: {
@@ -94,10 +94,10 @@ export const updateItem = async (req: Request, res: Response) => {
         },
       },
     });
-    if (!item) return res.status(404).json({ msg: "Item not found" });
+    if (!item) return res.status(404).json("Item not found");
     return res.status(200).json(item);
-  } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
   }
 };
 
@@ -107,9 +107,9 @@ export const deleteItem = async (req: Request, res: Response) => {
     const item = await prisma.item.delete({
       where: { id: itemId },
     });
-    if (!item) return res.status(404).json({ msg: "Item not found" });
-    return res.status(200).json({ msg: "Item deleted" });
-  } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    if (!item) return res.status(404).json("Item not found");
+    return res.status(200).json("Item deleted");
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
   }
 };
